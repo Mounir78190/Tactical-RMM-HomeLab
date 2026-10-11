@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Tactical RMM dans un HomeLab segmente</title>
+  <desc id="desc">Illustration de couverture montrant pfSense, KVM, Tactical RMM, Wazuh et les endpoints supervises.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07111f"/>
+      <stop offset="1" stop-color="#102a43"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#20c5e5"/>
+      <stop offset="1" stop-color="#3b82f6"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#000" flood-opacity=".35"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" rx="32" fill="url(#bg)"/>
+  <circle cx="1080" cy="80" r="180" fill="#20c5e5" opacity=".08"/>
+  <circle cx="100" cy="580" r="250" fill="#3b82f6" opacity=".08"/>
+  <text x="70" y="100" fill="#7dd3fc" font-family="Segoe UI,Arial,sans-serif" font-size="22" letter-spacing="4">HOMELAB • RMM • BLUE TEAM</text>
+  <text x="70" y="175" fill="#fff" font-family="Segoe UI,Arial,sans-serif" font-size="54" font-weight="700">Tactical RMM</text>
+  <text x="70" y="225" fill="#cbd5e1" font-family="Segoe UI,Arial,sans-serif" font-size="29">Supervision et administration d'un HomeLab segmente</text>
+  <path d="M245 395 H430 M560 395 H745 M875 395 H1030" stroke="url(#accent)" stroke-width="5" stroke-dasharray="12 10"/>
+  <g filter="url(#shadow)" font-family="Segoe UI,Arial,sans-serif" text-anchor="middle">
+    <g transform="translate(70 320)">
+      <rect width="175" height="150" rx="18" fill="#132f4c" stroke="#38bdf8" stroke-width="2"/>
+      <path d="M70 42 l18 -12 18 12 v24 c0 20-18 31-18 31S70 86 70 66z" fill="none" stroke="#7dd3fc" stroke-width="5"/>
+      <text x="88" y="125" fill="#fff" font-size="21" font-weight="600">pfSense</text>
+    </g>
+    <g transform="translate(430 320)">
+      <rect width="175" height="150" rx="18" fill="#132f4c" stroke="#8b5cf6" stroke-width="2"/>
+      <rect x="55" y="36" width="65" height="50" rx="5" fill="none" stroke="#c4b5fd" stroke-width="5"/>
+      <path d="M70 102 h35" stroke="#c4b5fd" stroke-width="5"/>
+      <text x="88" y="125" fill="#fff" font-size="21" font-weight="600">KVM / Debian</text>
+    </g>
+    <g transform="translate(745 320)">
+      <rect width="175" height="150" rx="18" fill="#103b4a" stroke="#22d3ee" stroke-width="3"/>
+      <circle cx="88" cy="62" r="28" fill="none" stroke="#67e8f9" stroke-width="6"/>
+      <path d="M88 42 v20 l15 10" fill="none" stroke="#67e8f9" stroke-width="6" stroke-linecap="round"/>
+      <text x="88" y="125" fill="#fff" font-size="21" font-weight="700">Tactical RMM</text>
+    </g>
+    <g transform="translate(1025 320)">
+      <rect width="110" height="150" rx="18" fill="#132f4c" stroke="#22c55e" stroke-width="2"/>
+      <circle cx="55" cy="61" r="26" fill="none" stroke="#86efac" stroke-width="5"/>
+      <path d="M43 61 l8 8 17-19" fill="none" stroke="#86efac" stroke-width="5" stroke-linecap="round"/>
+      <text x="55" y="125" fill="#fff" font-size="18" font-weight="600">Agents</text>
+    </g>
+  </g>
+  <rect x="70" y="530" width="1065" height="2" fill="#334155"/>
+  <text x="70" y="575" fill="#94a3b8" font-family="Segoe UI,Arial,sans-serif" font-size="21">POC fonctionnel • TLS • DNS-01 • Windows • Monitoring ICMP</text>
+  <text x="1135" y="575" text-anchor="end" fill="#7dd3fc" font-family="Segoe UI,Arial,sans-serif" font-size="21">2026</text>
+</svg>

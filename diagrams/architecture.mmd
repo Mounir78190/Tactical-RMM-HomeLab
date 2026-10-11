@@ -1,0 +1,21 @@
+flowchart TB
+    REMOTE[Poste d'administration distant] -->|WireGuard| PF[pfSense<br/>192.168.20.1]
+
+    PF --> ADMIN[VLAN 20 ADMIN<br/>192.168.20.0/24]
+    PF --> DEV[VLAN 30 DEV<br/>192.168.30.0/24]
+    PF --> KALI[VLAN 40 KALI<br/>192.168.40.0/24]
+
+    ADMIN --> HOST[Ubuntu Admin<br/>192.168.20.10<br/>Wazuh AIO]
+    HOST -->|KVM / libvirt| TRMM[VM Debian 12<br/>Tactical RMM]
+
+    TRMM --> FRONT[rmm.homelab.example.tld]
+    TRMM --> API[api.homelab.example.tld]
+    TRMM --> MESH[mesh.homelab.example.tld]
+
+    DEV --> DMZWEB[DMZ_WEB<br/>Agent Windows]
+    REMOTE -. Agent Windows .-> TRMM
+    DMZWEB -. Agent Windows .-> TRMM
+    DMZWEB -->|Ping Check ICMP| PF
+
+    HOST -. evenements de securite .-> WAZUH[Wazuh SIEM]
+    DMZWEB -. telemetrie securite .-> WAZUH

@@ -1,0 +1,32 @@
+# Secrets and private material
+.env
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.csr
+*token*
+*secret*
+*password*
+
+# Tactical RMM and infrastructure backups
+*.qcow2
+*.img
+*.iso
+*.bak
+*.dump
+*.sql
+backup/
+
+# Agent installers and logs
+*.exe
+*.msi
+*.log
+install.sh
+
+# Local tooling
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
