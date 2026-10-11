@@ -1,65 +1,65 @@
-# Securite de la publication
+# Sécurité de la publication
 
 Classification : **TLP:CLEAR**.
 
-## Principes appliques
+## Principes appliqués
 
-- serveur Tactical RMM isole dans une VM dediee ;
-- administration reservee aux reseaux prives et a WireGuard ;
-- HTTPS avec une chaine de confiance valide ;
+- serveur Tactical RMM isolé dans une VM dédiée ;
+- administration réservée aux réseaux privés et à WireGuard ;
+- HTTPS avec une chaîne de confiance valide ;
 - trois noms DNS distincts pour le frontend, l'API et MeshCentral ;
-- authentification multifacteur recommandee ;
+- authentification multifacteur recommandée ;
 - comptes nominatifs et droits minimaux ;
 - sauvegarde avant installation et changements majeurs ;
-- maintien de Wazuh comme couche de detection independante.
+- maintien de Wazuh comme couche de détection indépendante.
 
-## Elements exclus du depot
+## Éléments exclus du dépôt
 
-- mots de passe et adresses e-mail privees ;
-- cles Wi-Fi apparues dans une sortie Netplan ;
-- jetons d'enrolement et installateurs d'agents ;
+- mots de passe et adresses e-mail privées ;
+- clés Wi-Fi apparues dans une sortie Netplan ;
+- jetons d'enrôlement et installateurs d'agents ;
 - valeur du challenge ACME DNS-01 ;
-- certificats, cles privees et fichiers PEM ;
+- certificats, clés privées et fichiers PEM ;
 - identifiants MeshCentral et comptes d'urgence ;
 - adresses IP publiques et configuration WireGuard ;
-- sauvegardes QCOW2, bases de donnees et journaux bruts ;
-- scripts tiers non valides pendant le POC.
+- sauvegardes QCOW2, bases de données et journaux bruts ;
+- scripts tiers non validés pendant le POC.
 
-Les secrets qui ont ete affiches dans l'echange de travail doivent etre
-consideres compromis et remplaces avant toute publication, meme s'ils ne sont
-pas presents dans ce depot.
+Les secrets qui ont été affichés dans l'échange de travail doivent être
+considérés comme compromis et remplacés avant toute publication, même s'ils ne
+sont pas présents dans ce dépôt.
 
 ## Captures retenues
 
-Les preuves publiees sont recadrees pour retirer le navigateur et la barre des
-taches. Les colonnes contenant le nom de session Windows sont masquees. Les
-adresses RFC 1918 et les noms fonctionnels utiles a la comprehension sont
-conserves.
+Les preuves publiées sont recadrées pour retirer le navigateur et la barre des
+tâches. Les colonnes contenant le nom de session Windows sont masquées. Les
+adresses RFC 1918 et les noms fonctionnels utiles à la compréhension sont
+conservés.
 
 Les captures montrant une adresse e-mail, une IP publique, une valeur TXT ACME
 ou un secret de configuration sont exclues.
 
-## Securite de l'instance
+## Sécurité de l'instance
 
 Avant une utilisation autre qu'un laboratoire :
 
 1. Activer TOTP pour tous les comptes interactifs.
-2. Restreindre TCP 443 aux sources necessaires si l'usage le permet.
-3. Restreindre SSH aux postes d'administration et utiliser des cles.
-4. Desactiver ou limiter les scripts cote serveur.
-5. Revoir les permissions donnant acces au terminal et au controle distant.
+2. Restreindre TCP 443 aux sources nécessaires si l'usage le permet.
+3. Restreindre SSH aux postes d'administration et utiliser des clés.
+4. Désactiver ou limiter les scripts côté serveur.
+5. Revoir les permissions donnant accès au terminal et au contrôle distant.
 6. Journaliser les actions d'administration.
-7. Mettre a jour Tactical RMM selon la documentation officielle.
-8. Sauvegarder la plateforme et tester regulierement la restauration.
-9. Surveiller l'hote et la VM depuis un systeme independant.
-10. Revoquer immediatement tout jeton ou secret suspecte d'exposition.
+7. Mettre à jour Tactical RMM selon la documentation officielle.
+8. Sauvegarder la plateforme et tester régulièrement la restauration.
+9. Surveiller l'hôte et la VM depuis un système indépendant.
+10. Révoquer immédiatement tout jeton ou secret suspecté d'exposition.
 
-## Verification avant publication
+## Vérification avant publication
 
 ```text
 password | passwd | token | secret | api_key | Authorization
 BEGIN PRIVATE KEY | privkey.pem | _acme-challenge
 ```
 
-Chaque occurrence doit etre revue manuellement. Une mention documentaire est
-acceptable ; une valeur reelle ne l'est pas.
+Chaque occurrence doit être revue manuellement. Une mention documentaire est
+acceptable ; une valeur réelle ne l'est pas.

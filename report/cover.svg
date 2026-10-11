@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
-  <title id="title">Tactical RMM dans un HomeLab segmente</title>
-  <desc id="desc">Illustration de couverture montrant pfSense, KVM, Tactical RMM, Wazuh et les endpoints supervises.</desc>
+  <title id="title">Tactical RMM dans un HomeLab segmenté</title>
+  <desc id="desc">Illustration de couverture montrant pfSense, KVM, Tactical RMM, Wazuh et les postes supervisés.</desc>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="#07111f"/>
@@ -19,7 +19,7 @@
   <circle cx="100" cy="580" r="250" fill="#3b82f6" opacity=".08"/>
   <text x="70" y="100" fill="#7dd3fc" font-family="Segoe UI,Arial,sans-serif" font-size="22" letter-spacing="4">HOMELAB • RMM • BLUE TEAM</text>
   <text x="70" y="175" fill="#fff" font-family="Segoe UI,Arial,sans-serif" font-size="54" font-weight="700">Tactical RMM</text>
-  <text x="70" y="225" fill="#cbd5e1" font-family="Segoe UI,Arial,sans-serif" font-size="29">Supervision et administration d'un HomeLab segmente</text>
+  <text x="70" y="225" fill="#cbd5e1" font-family="Segoe UI,Arial,sans-serif" font-size="29">Supervision et administration d'un HomeLab segmenté</text>
   <path d="M245 395 H430 M560 395 H745 M875 395 H1030" stroke="url(#accent)" stroke-width="5" stroke-dasharray="12 10"/>
   <g filter="url(#shadow)" font-family="Segoe UI,Arial,sans-serif" text-anchor="middle">
     <g transform="translate(70 320)">
@@ -47,6 +47,6 @@
     </g>
   </g>
   <rect x="70" y="530" width="1065" height="2" fill="#334155"/>
-  <text x="70" y="575" fill="#94a3b8" font-family="Segoe UI,Arial,sans-serif" font-size="21">POC fonctionnel • TLS • DNS-01 • Windows • Monitoring ICMP</text>
+  <text x="70" y="575" fill="#94a3b8" font-family="Segoe UI,Arial,sans-serif" font-size="21">POC fonctionnel • TLS • DNS-01 • Windows • Supervision ICMP</text>
   <text x="1135" y="575" text-anchor="end" fill="#7dd3fc" font-family="Segoe UI,Arial,sans-serif" font-size="21">2026</text>
 </svg>

@@ -1,17 +1,17 @@
 # Inventaire des preuves
 
-Les captures ont ete recadrees et anonymisees pour une publication
-`TLP:CLEAR`. Les originaux contenant des donnees inutiles ou sensibles ne sont
-pas distribues.
+Les captures ont été recadrées et anonymisées pour une publication
+`TLP:CLEAR`. Les originaux contenant des données inutiles ou sensibles ne sont
+pas distribués.
 
-Les empreintes SHA-256 sont publiees dans
+Les empreintes SHA-256 sont publiées dans
 [`checksums.sha256`](checksums.sha256).
 
 | Fichier | Preuve | Traitement |
 |---|---|---|
-| `01-windows-agents.png` | Deux agents Windows en ligne dans le site HomeLab | navigateur retire, utilisateurs masques |
-| `02-pfsense-check-ok.png` | Ping Check pfSense reussi, 3/3 paquets | navigateur retire, utilisateurs masques |
-| `03-pfsense-check-settings.png` | Cible, severite, seuil et intervalle du check | navigateur retire, utilisateurs masques |
+| `01-windows-agents.png` | Deux agents Windows en ligne dans le site HomeLab | navigateur retiré, utilisateurs masqués |
+| `02-pfsense-check-ok.png` | Ping Check pfSense réussi, 3/3 paquets | navigateur retiré, utilisateurs masqués |
+| `03-pfsense-check-settings.png` | Cible, sévérité, seuil et intervalle du check | navigateur retiré, utilisateurs masqués |
 
 ## Captures volontairement exclues
 
@@ -19,13 +19,13 @@ Les empreintes SHA-256 sont publiees dans
 - interface du fournisseur DNS ;
 - terminal affichant une adresse e-mail ;
 - vue agent contenant une IP publique ;
-- essais de scripts PowerShell sans rapport direct avec le resultat du POC ;
-- sorties Netplan contenant des cles Wi-Fi en clair.
+- essais de scripts PowerShell sans rapport direct avec le résultat du POC ;
+- sorties Netplan contenant des clés Wi-Fi en clair.
 
-## Regles de conservation
+## Règles de conservation
 
-1. Conserver les originaux uniquement dans un espace prive chiffre.
-2. Ne publier que la version recadree et revue.
-3. Regenerer les sommes SHA-256 apres toute modification.
-4. Verifier en taille reelle les barres d'adresse, terminaux et infobulles.
-5. Revoquer tout secret accidentellement expose avant de supprimer une capture.
+1. Conserver les originaux uniquement dans un espace privé chiffré.
+2. Ne publier que la version recadrée et revue.
+3. Régénérer les sommes SHA-256 après toute modification.
+4. Vérifier en taille réelle les barres d'adresse, terminaux et infobulles.
+5. Révoquer tout secret accidentellement exposé avant de supprimer une capture.

@@ -1,134 +1,134 @@
 # Rapport de projet - Tactical RMM dans le HomeLab
 
-## Resume executif
+## Résumé exécutif
 
-L'objectif etait d'ajouter une capacite de Remote Monitoring and Management au
-HomeLab sans perturber Wazuh, deja exploite comme SIEM. L'etude a ecarte
-l'installation directe sur l'hote Ubuntu, car l'installateur traditionnel de
-Tactical RMM attend un serveur vierge et configure notamment son propre reverse
-proxy.
+L'objectif était d'ajouter une capacité de Remote Monitoring and Management au
+HomeLab sans perturber Wazuh, déjà exploité comme SIEM. L'étude a écarté
+l'installation directe sur l'hôte Ubuntu, car l'installateur traditionnel de
+Tactical RMM attend un serveur vierge et configure notamment son propre proxy
+inverse.
 
-Une VM Debian 12 a donc ete deployee avec KVM/QEMU et libvirt sur l'hote
+Une VM Debian 12 a donc été déployée avec KVM/QEMU et libvirt sur l'hôte
 existant. La plateforme Tactical RMM v1.5.2 utilise trois noms DNS et un
-certificat wildcard Let's Encrypt obtenu par challenge DNS-01. Deux endpoints
-Windows ont ete enroles. Un Ping Check natif execute depuis `DMZ_WEB` supervise
-desormais l'interface pfSense avec un intervalle de cinq minutes et une alerte
-apres trois echecs consecutifs.
+certificat wildcard Let's Encrypt obtenu par challenge DNS-01. Deux postes
+Windows ont été enrôlés. Un Ping Check natif exécuté depuis `DMZ_WEB` supervise
+désormais l'interface pfSense avec un intervalle de cinq minutes et une alerte
+après trois échecs consécutifs.
 
 Le POC est fonctionnel. L'agent Linux, l'envoi SMTP, le renouvellement TLS
-automatise et la supervision avancee pfSense restent explicitement hors de la
+automatisé et la supervision avancée de pfSense restent explicitement hors de la
 validation actuelle.
 
 ## Besoin initial
 
-Le HomeLab comprend plusieurs zones administrees par pfSense :
+Le HomeLab comprend plusieurs zones administrées par pfSense :
 
 - VLAN 20 ADMIN ;
 - VLAN 30 DEV ;
 - VLAN 40 KALI ;
-- acces distant WireGuard ;
+- accès distant WireGuard ;
 - Wazuh All-in-One sur le serveur Ubuntu Admin.
 
-Le besoin fonctionnel etait de centraliser la disponibilite, l'inventaire,
-l'etat des ressources et les actions de maintenance, tout en conservant Wazuh
-pour la detection et l'investigation de securite.
+Le besoin fonctionnel était de centraliser la disponibilité, l'inventaire,
+l'état des ressources et les actions de maintenance, tout en conservant Wazuh
+pour la détection et l'investigation de sécurité.
 
-## Etude des options
+## Étude des options
 
-| Option | Analyse | Decision |
+| Option | Analyse | Décision |
 |---|---|---|
-| Installation TRMM directe sur Ubuntu | conflits possibles avec Wazuh, Nginx et TCP 443 ; serveur non vierge | Rejetee |
-| Conteneurs Docker sur l'hote | isolation partielle et exploitation plus complexe pour ce POC | Non retenue |
-| VM dediee sur le meme hote | isolation, snapshot, restauration et OS compatible | Retenue |
+| Installation TRMM directe sur Ubuntu | conflits possibles avec Wazuh, Nginx et TCP 443 ; serveur non vierge | Rejetée |
+| Conteneurs Docker sur l'hôte | isolation partielle et exploitation plus complexe pour ce POC | Non retenue |
+| VM dédiée sur le même hôte | isolation, snapshot, restauration et OS compatible | Retenue |
 
-## Audit de faisabilite
+## Audit de faisabilité
 
-L'hote dispose de quatre coeurs, 15 Gio de RAM et d'un stockage largement
-disponible. Wazuh etait actif et stable ; son indexeur Java representait le
-principal consommateur de memoire. Le support VT-x, les modules KVM et
-`/dev/kvm` ont ete confirmes.
+L'hôte dispose de quatre cœurs, 15 Gio de RAM et d'un stockage largement
+disponible. Wazuh était actif et stable ; son indexeur Java représentait le
+principal consommateur de mémoire. Le support VT-x, les modules KVM et
+`/dev/kvm` ont été confirmés.
 
-L'allocation initiale de la VM a ete volontairement limitee a deux vCPU, 4 Gio
-de RAM et 60 Gio de disque afin de laisser une marge au SIEM et a l'hote.
+L'allocation initiale de la VM a été volontairement limitée à deux vCPU, 4 Gio
+de RAM et 60 Gio de disque afin de laisser une marge au SIEM et à l'hôte.
 
-## Mise en oeuvre
+## Mise en œuvre
 
 ### Virtualisation
 
-KVM/QEMU, libvirt, Virt-Manager et les outils clients ont ete installes. Le
-service libvirt et le reseau NAT par defaut ont ete valides avant la creation de
+KVM/QEMU, libvirt, Virt-Manager et les outils clients ont été installés. Le
+service libvirt et le réseau NAT par défaut ont été validés avant la création de
 la VM Debian 12 minimale.
 
-### Reseau
+### Réseau
 
-La configuration de l'hote repose sur NetworkManager et `enp3s0`. La presence
-de plusieurs fichiers Netplan a conduit a eviter une bascule immediate vers un
-bridge physique. Un reseau virtuel prive a permis de preparer la VM sans couper
+La configuration de l'hôte repose sur NetworkManager et `enp3s0`. La présence
+de plusieurs fichiers Netplan a conduit à éviter une bascule immédiate vers un
+bridge physique. Un réseau virtuel privé a permis de préparer la VM sans couper
 SSH, le Dashboard Wazuh ou les flux inter-VLAN existants.
 
 ### DNS et TLS
 
-Trois noms ont ete reserves pour le frontend, l'API et MeshCentral. Plusieurs
-incidents de resolution et de validation ACME ont montre l'importance de
+Trois noms ont été réservés pour le frontend, l'API et MeshCentral. Plusieurs
+incidents de résolution et de validation ACME ont montré l'importance de
 distinguer DNS interne et DNS public autoritaire. Le certificat final est un
-wildcard Let's Encrypt obtenu par DNS-01 puis fourni a l'installateur.
+wildcard Let's Encrypt obtenu par DNS-01 puis fourni à l'installateur.
 
 ### Installation applicative
 
-L'installation a ete effectuee sur la VM dediee avec les chemins du certificat
-et de la cle. Une interruption a necessite la restauration de l'image QCOW2,
-ce qui a valide l'utilite du point de retour pris avant l'operation.
+L'installation a été effectuée sur la VM dédiée avec les chemins du certificat
+et de la clé. Une interruption a nécessité la restauration de l'image QCOW2,
+ce qui a validé l'utilité du point de retour pris avant l'opération.
 
-### Enrolement
+### Enrôlement
 
-Le client et le site du HomeLab ont ete crees. Deux agents Windows sont apparus
-en ligne apres verification du DNS, de TLS, des protections endpoint et de la
-connectivite MeshCentral.
+Le client et le site du HomeLab ont été créés. Deux agents Windows sont apparus
+en ligne après vérification du DNS, de TLS, des protections des postes et de la
+connectivité MeshCentral.
 
 ## Supervision de pfSense
 
-Un test `Test-Connection` depuis `DMZ_WEB` a confirme quatre reponses ICMP sans
-perte. Le check natif a ensuite ete configure :
+Un test `Test-Connection` depuis `DMZ_WEB` a confirmé quatre réponses ICMP sans
+perte. Le check natif a ensuite été configuré :
 
-| Parametre | Valeur |
+| Paramètre | Valeur |
 |---|---|
 | Nom | `PFSENSE - ICMP Availability` |
 | Cible | `192.168.20.1` |
 | Intervalle | 300 secondes |
-| Severite | Warning |
-| Seuil | 3 echecs consecutifs |
+| Sévérité | Warning |
+| Seuil | 3 échecs consécutifs |
 
-L'execution forcee a retourne trois paquets transmis, trois recus et 0 % de
+L'exécution forcée a retourné trois paquets transmis, trois reçus et 0 % de
 perte.
 
 ## Incidents et enseignements
 
 | Incident | Enseignement |
 |---|---|
-| DNS public non resolu | verifier la zone autoritaire, pas seulement le DNS local |
-| Challenge ACME en NXDOMAIN | controler le FQDN produit par l'interface du fournisseur |
-| Erreur Certbot | verifier versions, logs et staging avant production |
-| Installation interrompue | toujours creer et tester un point de restauration |
-| Agent Windows bloque | diagnostiquer DNS, TLS et EDR avant toute exception |
-| Agent Linux refuse | respecter le modele de signature et de sponsoring officiel |
-| Script PowerShell sans prerequis | declarer interpreteur, version et rollback |
+| DNS public non résolu | vérifier la zone autoritaire, pas seulement le DNS local |
+| Challenge ACME en NXDOMAIN | contrôler le FQDN produit par l'interface du fournisseur |
+| Erreur Certbot | vérifier les versions, les journaux et la préproduction avant la production |
+| Installation interrompue | toujours créer et tester un point de restauration |
+| Agent Windows bloqué | diagnostiquer DNS, TLS et EDR avant toute exception |
+| Agent Linux refusé | respecter le modèle officiel de signature et de parrainage |
+| Script PowerShell sans prérequis | déclarer l'interpréteur, la version et le retour arrière |
 
-## Resultat
+## Résultat
 
-Le HomeLab dispose maintenant d'une plateforme RMM isolee et accessible en
-HTTPS, de deux endpoints Windows enroles et d'un premier monitoring reseau de
-pfSense. Le serveur Wazuh est reste separe et operationnel.
+Le HomeLab dispose maintenant d'une plateforme RMM isolée et accessible en
+HTTPS, de deux postes Windows enrôlés et d'une première supervision réseau de
+pfSense. Le serveur Wazuh est resté séparé et opérationnel.
 
-Le resultat demontre une demarche complete : audit, choix d'architecture,
-virtualisation, DNS/TLS, installation, restauration, enrolement, monitoring et
+Le résultat démontre une démarche complète : audit, choix d'architecture,
+virtualisation, DNS/TLS, installation, restauration, enrôlement, supervision et
 documentation des limites.
 
-## Prochaines etapes
+## Prochaines étapes
 
 1. Configurer SMTP et un Alert Template pour e-mail et pop-up Dashboard.
 2. Tester l'alerte sur une cible factice, sans interrompre pfSense.
 3. Automatiser et tester le renouvellement DNS-01.
 4. Ajouter des checks Wazuh, DNS et HTTPS.
-5. Ajouter une seconde sonde pour reduire la dependance a `DMZ_WEB`.
-6. Evaluer SNMPv3 et l'integration des alertes TRMM dans Wazuh.
+5. Ajouter une seconde sonde pour réduire la dépendance à `DMZ_WEB`.
+6. Évaluer SNMPv3 et l'intégration des alertes TRMM dans Wazuh.
 7. Formaliser un plan de sauvegarde et de reprise avec RTO/RPO.

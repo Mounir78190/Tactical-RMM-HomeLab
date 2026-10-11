@@ -1,12 +1,12 @@
-# Procedure de deploiement
+# Procédure de déploiement
 
-Cette procedure reconstitue les etapes du POC. Elle doit etre adaptee a la
-version de Tactical RMM et a l'architecture cible. La documentation officielle
-reste la reference avant toute execution.
+Cette procédure reconstitue les étapes du POC. Elle doit être adaptée à la
+version de Tactical RMM et à l'architecture cible. La documentation officielle
+reste la référence avant toute exécution.
 
-## 1. Auditer l'hote existant
+## 1. Auditer l'hôte existant
 
-Les controles initiaux ont porte sur le systeme, les ressources, Wazuh, les
+Les contrôles initiaux ont porté sur le système, les ressources, Wazuh, les
 ports et la virtualisation :
 
 ```bash
@@ -26,10 +26,10 @@ sudo ss -tulpen
 
 Constats principaux :
 
-- l'hote dispose de ressources suffisantes pour un petit POC ;
-- Wazuh utilise deja TCP 443 et plusieurs ports de collecte sur l'hote ;
-- l'installation TRMM directe aurait donc ete risquee ;
-- la VM permet d'isoler les services, les sauvegardes et les mises a jour.
+- l'hôte dispose de ressources suffisantes pour un petit POC ;
+- Wazuh utilise déjà TCP 443 et plusieurs ports de collecte sur l'hôte ;
+- l'installation TRMM directe aurait donc été risquée ;
+- la VM permet d'isoler les services, les sauvegardes et les mises à jour.
 
 ## 2. Valider KVM
 
@@ -40,8 +40,8 @@ ls -l /dev/kvm
 lscpu | grep -E 'Model name|Virtualization|CPU\(s\)'
 ```
 
-Le POC a confirme les extensions Intel VT-x, les modules `kvm` et `kvm_intel`
-ainsi que la presence de `/dev/kvm`.
+Le POC a confirmé les extensions Intel VT-x, les modules `kvm` et `kvm_intel`
+ainsi que la présence de `/dev/kvm`.
 
 ## 3. Installer l'hyperviseur
 
@@ -58,7 +58,7 @@ sudo apt install -y \
 sudo usermod -aG libvirt,kvm "$USER"
 ```
 
-Ouvrir une nouvelle session avant de tester les groupes, puis verifier :
+Ouvrir une nouvelle session avant de tester les groupes, puis vérifier :
 
 ```bash
 systemctl status libvirtd --no-pager
@@ -68,9 +68,9 @@ sudo virsh net-list --all
 sudo virsh nodeinfo
 ```
 
-Le POC a valide QEMU 8.2.2, libvirt 10.0.0 et le reseau NAT `default`.
+Le POC a validé QEMU 8.2.2, libvirt 10.0.0 et le réseau NAT `default`.
 
-## 4. Controler le reseau avant modification
+## 4. Contrôler le réseau avant modification
 
 ```bash
 ip -br addr
@@ -79,35 +79,35 @@ nmcli -f NAME,TYPE,DEVICE connection show --active
 sudo netplan get
 ```
 
-L'hote utilise NetworkManager et l'interface Ethernet `enp3s0`. Plusieurs
-fichiers Netplan etaient presents ; aucune conversion precipitee en bridge n'a
-ete realisee. Le deploiement a d'abord utilise un reseau virtuel prive pour ne
+L'hôte utilise NetworkManager et l'interface Ethernet `enp3s0`. Plusieurs
+fichiers Netplan étaient présents ; aucune conversion précipitée en bridge n'a
+été réalisée. Le déploiement a d'abord utilisé un réseau virtuel privé pour ne
 pas interrompre Wazuh ou SSH.
 
-> `sudo netplan get` peut afficher des cles Wi-Fi en clair. Ne jamais publier sa
-> sortie brute. Les cles exposees pendant le diagnostic doivent etre changees.
+> `sudo netplan get` peut afficher des clés Wi-Fi en clair. Ne jamais publier sa
+> sortie brute. Les clés exposées pendant le diagnostic doivent être changées.
 
-## 5. Creer la VM Debian 12
+## 5. Créer la VM Debian 12
 
 Dans Virt-Manager :
 
-| Parametre | Valeur du POC |
+| Paramètre | Valeur du POC |
 |---|---|
 | Nom | `TRMM-SRV` |
 | ISO | Debian 12 amd64 |
 | vCPU | 2 |
 | RAM | 4096 Mio |
 | Disque | 60 Gio QCOW2 |
-| Reseau initial | libvirt NAT |
-| Paquets invites | serveur SSH et outils standard uniquement |
+| Réseau initial | libvirt NAT |
+| Paquets installés sur l'invité | serveur SSH et outils standard uniquement |
 
-Appliquer les mises a jour, definir une adresse stable et verifier DNS, NTP et
-HTTPS sortant. Creer ensuite un snapshot ou une copie coherente du QCOW2 avant
+Appliquer les mises à jour, définir une adresse stable et vérifier DNS, NTP et
+HTTPS sortant. Créer ensuite un snapshot ou une copie cohérente du QCOW2 avant
 l'installation de Tactical RMM.
 
-## 6. Preparer DNS et TLS
+## 6. Préparer DNS et TLS
 
-Creer trois noms au meme niveau :
+Créer trois noms au même niveau :
 
 ```text
 rmm.homelab.example.tld
@@ -115,7 +115,7 @@ api.homelab.example.tld
 mesh.homelab.example.tld
 ```
 
-Verifier depuis un agent et depuis le reseau d'administration :
+Vérifier depuis un agent et depuis le réseau d'administration :
 
 ```bash
 getent hosts rmm.homelab.example.tld
@@ -129,22 +129,22 @@ Pour le certificat wildcard, l'installateur demande un TXT sous :
 _acme-challenge.homelab.example.tld
 ```
 
-La valeur est temporaire et ne doit jamais etre archivee. Attendre sa
-propagation et la verifier depuis un resolveur public avant de poursuivre :
+La valeur est temporaire et ne doit jamais être archivée. Attendre sa
+propagation et la vérifier depuis un résolveur public avant de poursuivre :
 
 ```bash
 dig TXT _acme-challenge.homelab.example.tld @1.1.1.1
 ```
 
-Le POC a finalement utilise un certificat Let's Encrypt valide fourni a
-l'installateur avec son `fullchain.pem` et sa cle privee. Aucun certificat ou
-fichier PEM n'est inclus dans ce depot.
+Le POC a finalement utilisé un certificat Let's Encrypt valide fourni à
+l'installateur avec son `fullchain.pem` et sa clé privée. Aucun certificat ou
+fichier PEM n'est inclus dans ce dépôt.
 
 ## 7. Installer Tactical RMM
 
 La documentation officielle demande un serveur vierge Debian 11/12 ou Ubuntu
-22.04 LTS avec au moins 4 Gio de RAM. Toujours recuperer l'installateur depuis
-le depot officiel et le relire avant execution :
+22.04 LTS avec au moins 4 Gio de RAM. Toujours récupérer l'installateur depuis
+le dépôt officiel et le relire avant exécution :
 
 ```bash
 wget https://raw.githubusercontent.com/amidaware/tacticalrmm/master/install.sh
@@ -161,52 +161,52 @@ Valeurs fonctionnelles attendues :
 | MeshCentral | `mesh.homelab.example.tld` |
 | Root domain | `homelab.example.tld` |
 | Certificat | chemin local vers `fullchain.pem` |
-| Cle privee | chemin local vers `privkey.pem` |
+| Clé privée | chemin local vers `privkey.pem` |
 
 Ne pas employer `--insecure` pour un environnement durable. Conserver les
-identifiants generes dans un gestionnaire de secrets, pas dans Git.
+identifiants générés dans un gestionnaire de secrets, pas dans Git.
 
 ## 8. Initialiser l'application
 
 Depuis le frontend HTTPS :
 
-1. Creer le client du laboratoire.
-2. Creer le site `HomeLab - Infrastructure`.
-3. Selectionner le fuseau horaire adapte.
+1. Créer le client du laboratoire.
+2. Créer le site `HomeLab - Infrastructure`.
+3. Sélectionner le fuseau horaire adapté.
 4. Activer l'authentification multifacteur.
-5. Creer un compte nominatif distinct du compte d'urgence.
-6. Appliquer le principe du moindre privilege.
+5. Créer un compte nominatif distinct du compte d'urgence.
+6. Appliquer le principe du moindre privilège.
 
-## 9. Enroler les agents Windows
+## 9. Enrôler les agents Windows
 
-Le POC a enregistre deux machines Windows : un poste d'administration distant
-et `DMZ_WEB`. Les controles ont inclus :
+Le POC a enregistré deux machines Windows : un poste d'administration distant
+et `DMZ_WEB`. Les contrôles ont inclus :
 
-- resolution des trois noms TRMM ;
-- acces TCP 443 ;
-- validation de la chaine TLS ;
-- verification de l'antivirus et de Smart App Control ;
-- installation avec elevation de privileges ;
+- résolution des trois noms TRMM ;
+- accès TCP 443 ;
+- validation de la chaîne TLS ;
+- vérification de l'antivirus et de Smart App Control ;
+- installation avec élévation de privilèges ;
 - apparition de l'agent et actualisation de `Last Response` ;
-- test des fonctions autorisees de MeshCentral.
+- test des fonctions autorisées de MeshCentral.
 
-Ne jamais committer l'installateur genere, son jeton d'enrolement ou sa ligne de
-commande complete.
+Ne jamais inclure dans un commit l'installateur généré, son jeton d'enrôlement
+ou sa ligne de commande complète.
 
 ## 10. Valider le service
 
-Les criteres de recette sont :
+Les critères de recette sont :
 
 - interface RMM accessible sans alerte TLS ;
 - API et MeshCentral joignables par leur nom DNS ;
 - deux agents Windows en ligne ;
 - inventaire visible ;
-- controle ICMP pfSense au vert ;
-- historique du check alimente ;
-- Wazuh toujours operationnel sur l'hote ;
-- restauration de la VM documentee.
+- contrôle ICMP pfSense au vert ;
+- historique du check alimenté ;
+- Wazuh toujours opérationnel sur l'hôte ;
+- restauration de la VM documentée.
 
-## References
+## Références
 
 - [Installation traditionnelle Tactical RMM](https://docs.tacticalrmm.com/install_server/)
 - [Installation des agents](https://docs.tacticalrmm.com/install_agent/)
